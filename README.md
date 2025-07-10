@@ -1,6 +1,6 @@
-# Sreeja's Photobooth App
+# BoothieCall Playground
 
-A modern, interactive web-based photobooth application built with React, Vite, and Tailwind CSS. Create, customize, and download beautiful photo strips with multiple layout options, design templates, and animated GIFs.
+A sophisticated web-based photobooth application featuring the elegant "Elegancia Nocturna" design system. Built with React, Vite, and Tailwind CSS, this playground allows users to create, customize, and download professional photo strips with luxury dark aesthetics and gold accents.
 
 ## 🌟 Features
 
@@ -27,13 +27,13 @@ A modern, interactive web-based photobooth application built with React, Vite, a
 - **Real-time preview** - see filter effects on photo thumbnails
 - **Paginated filter selection** - browse through all available filters
 
-### 🌈 **Theme System**
-- **Dual theme support**: Pink (Light) and Red (Dark) modes
-- **Theme toggle** with sun/moon icons
-- **Persistent theme preference** saved in localStorage
-- **Cream-colored cards** in red theme for better contrast
-- **Animated backgrounds** with gradient effects
-- **Shooting star cursor** that adapts to theme colors
+### 🌈 **Elegancia Nocturna Design System**
+- **Luxury dark theme** with sophisticated gold accents (#D8AE48)
+- **Premium typography** using Cinzel (headings) and Montserrat (body)
+- **Elegant cursor design** with custom golden styling
+- **Gallery background collage** showcasing photo examples
+- **Animated dark gradients** for premium feel
+- **Sophisticated color palette** optimized for luxury aesthetics
 
 ### 🖼️ **Photo Processing**
 - **Smart image cropping** with aspect ratio preservation
@@ -60,8 +60,8 @@ A modern, interactive web-based photobooth application built with React, Vite, a
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd photobooth
+   git clone https://github.com/axlwolf/boothiecal_playground.git
+   cd boothiecal_playground
    ```
 
 2. **Install dependencies**
@@ -75,7 +75,7 @@ A modern, interactive web-based photobooth application built with React, Vite, a
    ```
 
 4. **Open your browser**
-   Navigate to `http://localhost:5173` to access the application
+   Navigate to `http://localhost:5173/photobooth-web/` to access the BoothieCall Playground
 
 ### Building for Production
 
@@ -88,7 +88,7 @@ The built files will be in the `dist` directory.
 ## 🏗️ Project Structure
 
 ```
-photobooth/
+boothiecal_playground/
 ├── public/
 │   ├── designs/          # Photo strip design templates
 │   │   ├── 1shot-design1.png to 1shot-design9.png
@@ -125,10 +125,11 @@ photobooth/
 ## 🎯 How It Works
 
 ### 1. **Landing Page**
-- Beautiful animated welcome screen with shooting star cursor
+- Elegant BoothieCall branding with premium logo display
+- Gallery background collage showcasing photo examples
+- Sophisticated Elegancia Nocturna dark theme with gold accents
 - Interactive hover animations with sample photo strips
-- Theme-aware styling with pink/blue color schemes
-- "Start Photobooth" button to begin the experience
+- "Start Playground" button to begin the photobooth experience
 
 ### 2. **Layout Selection**
 - Choose from 4 different photo strip layouts:
@@ -174,10 +175,11 @@ photobooth/
 ### **Core Technologies**
 - **React 18** - Modern React with hooks and context
 - **Vite** - Fast build tool and dev server
-- **Tailwind CSS** - Utility-first CSS framework
+- **Tailwind CSS** - Utility-first CSS framework with custom Elegancia Nocturna theme
 - **MediaRecorder API** - For GIF capture functionality
 - **gifshot** - GIF creation and compositing
 - **gifuct-js** - GIF processing and manipulation
+- **Google Fonts** - Cinzel and Montserrat for premium typography
 
 ### **Key Dependencies**
 - `gifshot` - GIF creation capabilities
@@ -185,12 +187,12 @@ photobooth/
 - `react-webcam` - Webcam integration
 - **Dynamic imports** for optimized loading
 
-### **Theme System**
-- **Context-based theme management** with React Context
-- **Persistent theme storage** in localStorage
-- **Animated backgrounds** with CSS gradients
-- **Theme-aware components** that adapt colors automatically
-- **Shooting star cursor** that reflects current theme
+### **Elegancia Nocturna Design System**
+- **Sophisticated color palette** with luxury dark backgrounds and gold accents
+- **Premium typography system** with elegant serif headings
+- **Custom Tailwind configuration** with brand-specific colors and spacing
+- **Gallery background integration** using dynamic image collages
+- **Refined cursor experience** with subtle gold styling
 
 ### **Filter System**
 - **CSS filter effects** applied in real-time
@@ -266,14 +268,14 @@ This will build the project and deploy it to the configured GitHub Pages URL.
 
 ## 🎉 Recent Updates
 
-- ✅ **GIF capture and download** functionality
-- ✅ **Theme system** with pink/red modes
-- ✅ **Enhanced filter system** with "All Photos" option
-- ✅ **Improved pagination** controls
-- ✅ **Shooting star cursor** animation
-- ✅ **Cream-colored cards** in blue theme
-- ✅ **Animated backgrounds** with gradient effects
-- ✅ **Responsive design** improvements
+- ✅ **Elegancia Nocturna design system** implementation
+- ✅ **Premium typography** with Cinzel and Montserrat fonts
+- ✅ **Luxury gold color palette** (#D8AE48) throughout the app
+- ✅ **Gallery background collage** using dynamic photo examples
+- ✅ **Sophisticated cursor design** with elegant golden styling
+- ✅ **BoothieCall branding** integration with custom logo
+- ✅ **Enhanced user experience** with refined dark aesthetics
+- ✅ **TypeScript migration roadmap** for future development
 
 ## 🤝 Contributing
 
@@ -296,4 +298,4 @@ This project is licensed under the MIT License.
 
 ---
 
-**Created with ❤️ by Sreeja**
+**Created with ❤️ by Axel Lanuza for BoothieCall.net**

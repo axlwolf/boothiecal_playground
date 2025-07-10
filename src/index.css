@@ -1,34 +1,37 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  font-family: 'Poppins', Arial, sans-serif;
-}
-.font-pacifico {
-  font-family: 'Pacifico', cursive;
+  font-family: 'Montserrat', Arial, sans-serif;
+  background-color: #0A0A0A;
+  color: #FFFFFF;
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="%23D8AE48" stroke-width="2" fill="none" opacity="0.8"/><circle cx="12" cy="12" r="2" fill="%23D8AE48"/></svg>') 12 12, auto;
 }
 
-.animated-pink-bg {
-  background: linear-gradient(120deg, #fce4ec, #f8bbd0, #f06292, #f8bbd0, #fce4ec);
+/* Cursor styles for interactive elements */
+button, a, [role="button"] {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="%23D8AE48" stroke-width="3" fill="none" opacity="1"/><circle cx="12" cy="12" r="3" fill="%23D8AE48"/></svg>') 12 12, pointer;
+}
+
+.font-elegancia-heading {
+  font-family: 'Cinzel', serif;
+}
+
+.font-elegancia-body {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.elegancia-animated-bg {
+  background: linear-gradient(120deg, #0A0A0A, #1C1C1C, #121212, #0A0A0A, #1C1C1C);
   background-size: 400% 400%;
-  animation: pinkGradient 12s ease-in-out infinite;
+  animation: eleganciaGradient 20s ease-in-out infinite;
 }
 
-.animated-red-bg {
-  background: linear-gradient(120deg, #7f1d1d, #dc2626, #991b1b, #dc2626, #7f1d1d);
-  background-size: 400% 400%;
-  animation: redGradient 20s ease-in-out infinite;
-}
-
-@keyframes pinkGradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes redGradient {
+@keyframes eleganciaGradient {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
