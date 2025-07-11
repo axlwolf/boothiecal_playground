@@ -1,89 +1,75 @@
+import { FrameMapping } from "../types";
+
 //used to map the photo frames to the captured image for all types of shots
-const frameMappings = {
+const frameMappings: Record<string, FrameMapping> = {
   "1shot-design1": {
-    frame: "/photobooth-web/designs/1shot-design1.png",
+    frame: "/designs/1shot-design1.png",
     frameWidth: 350,
     frameHeight: 430,
-    windows: [
-      { left: 20, top: 25, width: 310, height: 320, borderRadius: 0 }
-    ],
+    windows: [{ left: 20, top: 25, width: 310, height: 320, borderRadius: 0 }],
   },
   "1shot-design2": {
-    frame: "/photobooth-web/designs/1shot-design2.png",
+    frame: "/designs/1shot-design2.png",
     frameWidth: 500,
     frameHeight: 375,
-    windows: [
-      { left: 40, top: 50, width: 300, height: 270, borderRadius: 24 }
-    ],
+    windows: [{ left: 40, top: 50, width: 300, height: 270, borderRadius: 24 }],
   },
   "1shot-design3": {
-    frame: "/photobooth-web/designs/1shot-design3.png",
+    frame: "/designs/1shot-design3.png",
     frameWidth: 400,
     frameHeight: 500,
-    windows: [
-      { left: 20, top: 10, width: 350, height: 400, borderRadius: 24 }
-    ],
+    windows: [{ left: 20, top: 10, width: 350, height: 400, borderRadius: 24 }],
   },
   "1shot-design4": {
-    frame: "/photobooth-web/designs/1shot-design4.png",
+    frame: "/designs/1shot-design4.png",
     frameWidth: 500,
     frameHeight: 450,
-    windows: [
-      { left: 90, top: 10, width: 300, height: 350, borderRadius: 10 }
-    ],
+    windows: [{ left: 90, top: 10, width: 300, height: 350, borderRadius: 10 }],
   },
   "1shot-design5": {
-    frame: "/photobooth-web/designs/1shot-design5.png",
+    frame: "/designs/1shot-design5.png",
     frameWidth: 600,
     frameHeight: 375,
-    windows: [
-      { left: 40, top: 50, width: 400, height: 295, borderRadius: 24 }
-    ],
+    windows: [{ left: 40, top: 50, width: 400, height: 295, borderRadius: 24 }],
   },
   "1shot-design6": {
-    frame: "/photobooth-web/designs/1shot-design6.png",
+    frame: "/designs/1shot-design6.png",
     frameWidth: 530,
     frameHeight: 535,
     windows: [
-      { left: 115, top: 100, width: 300, height: 305, borderRadius: 120 }
+      { left: 115, top: 100, width: 300, height: 305, borderRadius: 120 },
     ],
   },
   "1shot-design7": {
-    frame: "/photobooth-web/designs/1shot-design7.png",
+    frame: "/designs/1shot-design7.png",
     frameWidth: 550,
     frameHeight: 350,
-    windows: [
-      { left: 38, top: 50, width: 250, height: 270, borderRadius: 0 }
-    ],
+    windows: [{ left: 38, top: 50, width: 250, height: 270, borderRadius: 0 }],
   },
   "1shot-design8": {
-    frame: "/photobooth-web/designs/1shot-design8.png",
+    frame: "/designs/1shot-design8.png",
     frameWidth: 500,
     frameHeight: 500,
     windows: [
-      { left: 50, top: 140, width: 300, height: 230, borderRadius: 24 }
+      { left: 50, top: 140, width: 300, height: 230, borderRadius: 24 },
     ],
   },
   "1shot-design9": {
-    frame: "/photobooth-web/designs/1shot-design9.png",
+    frame: "/designs/1shot-design9.png",
     frameWidth: 500,
     frameHeight: 630,
-    windows: [
-      { left: 40, top: 48, width: 420, height: 435, borderRadius: 0 }
-    ],
+    windows: [{ left: 40, top: 48, width: 420, height: 435, borderRadius: 0 }],
   },
 
   "1shot-design10": {
-    frame: "/photobooth-web/designs/1shot-design10.png",
+    frame: "/designs/1shot-design10.png",
     frameWidth: 500,
     frameHeight: 330,
-    windows: [
-      { left: 35, top: 55, width: 200, height: 235, borderRadius: 0 }
-    ],
+    windows: [{ left: 35, top: 55, width: 200, height: 235, borderRadius: 0 }],
   },
 
   "3shot-design1": {
-    frame: "/photobooth-web/designs/3shot-design1.png",
+    frame: "/designs/3shot-design1.png",
     frameWidth: 450,
     frameHeight: 1000,
     windows: [
@@ -93,7 +79,7 @@ const frameMappings = {
     ],
   },
   "3shot-design2": {
-    frame: "/photobooth-web/designs/3shot-design2.png",
+    frame: "/designs/3shot-design2.png",
     frameWidth: 450,
     frameHeight: 1000,
     windows: [
@@ -103,7 +89,7 @@ const frameMappings = {
     ],
   },
   "3shot-design3": {
-    frame: "/photobooth-web/designs/3shot-design3.png",
+    frame: "/designs/3shot-design3.png",
     frameWidth: 496,
     frameHeight: 1200,
     windows: [
@@ -112,9 +98,9 @@ const frameMappings = {
       { left: 20, top: 710, width: 450, height: 340, borderRadius: 24 },
     ],
   },
-  
+
   "3shot-design4": {
-    frame: "/photobooth-web/designs/3shot-design4.png",
+    frame: "/designs/3shot-design4.png",
     frameWidth: 350,
     frameHeight: 1100,
     windows: [
@@ -124,7 +110,7 @@ const frameMappings = {
     ],
   },
   "3shot-design5": {
-    frame: "/photobooth-web/designs/3shot-design5.png",
+    frame: "/designs/3shot-design5.png",
     frameWidth: 450,
     frameHeight: 1000,
     windows: [
@@ -134,18 +120,18 @@ const frameMappings = {
     ],
   },
   "4shot-design1": {
-    frame: "/photobooth-web/designs/4shot-design1.png",
+    frame: "/designs/4shot-design1.png",
     frameWidth: 525,
     frameHeight: 1259,
     windows: [
       { left: 75, top: 25, width: 378, height: 290, borderRadius: 24 },
       { left: 75, top: 330, width: 378, height: 290, borderRadius: 24 },
-      { left: 75, top: 934, width: 378, height: 290, borderRadius: 24 },//4th picture
+      { left: 75, top: 934, width: 378, height: 290, borderRadius: 24 }, //4th picture
       { left: 75, top: 640, width: 378, height: 290, borderRadius: 24 }, //3rd picture
     ],
   },
   "4shot-design2": {
-    frame: "/photobooth-web/designs/4shot-design2.png",
+    frame: "/designs/4shot-design2.png",
     frameWidth: 500,
     frameHeight: 1200,
     windows: [
@@ -156,18 +142,18 @@ const frameMappings = {
     ],
   },
   "4shot-design3": {
-    frame: "/photobooth-web/designs/4shot-design3.png",
+    frame: "/designs/4shot-design3.png",
     frameWidth: 525,
     frameHeight: 1259,
     windows: [
       { left: 50, top: 25, width: 418, height: 290, borderRadius: 24 },
       { left: 50, top: 290, width: 418, height: 290, borderRadius: 24 },
-      { left: 50, top: 810, width: 418, height: 290, borderRadius: 24 },//4th picture
+      { left: 50, top: 810, width: 418, height: 290, borderRadius: 24 }, //4th picture
       { left: 50, top: 555, width: 418, height: 290, borderRadius: 24 }, //3rd picture
     ],
   },
   "4shot-design4": {
-    frame: "/photobooth-web/designs/4shot-design4.png",
+    frame: "/designs/4shot-design4.png",
     frameWidth: 500,
     frameHeight: 1200,
     windows: [
@@ -178,7 +164,7 @@ const frameMappings = {
     ],
   },
   "4shot-design5": {
-    frame: "/photobooth-web/designs/4shot-design5.png",
+    frame: "/designs/4shot-design5.png",
     frameWidth: 525,
     frameHeight: 1259,
     windows: [
@@ -189,7 +175,7 @@ const frameMappings = {
     ],
   },
   "6shot-design1": {
-    frame: "/photobooth-web/designs/6shot-design1.png",
+    frame: "/designs/6shot-design1.png",
     frameWidth: 525,
     frameHeight: 1000,
     windows: [
@@ -202,7 +188,7 @@ const frameMappings = {
     ],
   },
   "6shot-design2": {
-    frame: "/photobooth-web/designs/6shot-design2.png",
+    frame: "/designs/6shot-design2.png",
     frameWidth: 525,
     frameHeight: 1000,
     windows: [
@@ -215,7 +201,7 @@ const frameMappings = {
     ],
   },
   "6shot-design3": {
-    frame: "/photobooth-web/designs/6shot-design3.png",
+    frame: "/designs/6shot-design3.png",
     frameWidth: 525,
     frameHeight: 1100,
     windows: [
@@ -228,7 +214,7 @@ const frameMappings = {
     ],
   },
   // "6shot-design4": {
-  //   frame: "/photobooth-web/designs/6shot-design4.png",
+  //   frame: "/designs/6shot-design4.png",
   //   frameWidth: 525,
   //   frameHeight: 1000,
   //   windows: [
@@ -245,6 +231,6 @@ const frameMappings = {
 };
 export default frameMappings;
 //[fixed]current problem: Photo is mapped but after downloading some of them get stretched(updated download logic in stripdesign)
-//solution: add a feature where if the photo excedds the photo overlay, the exceeded part disappears 
+//solution: add a feature where if the photo excedds the photo overlay, the exceeded part disappears
 //solution: choose photo frames with more feasible mapping to the original 640x480 camera view
 //[fixed]problem:if zoom more than 50% the 3shot designs exceed the webpage, need to fix that (now fixed with 2 designs per page)

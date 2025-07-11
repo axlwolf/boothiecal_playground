@@ -1,21 +1,22 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Camera } from "react-camera-pro";
 import BackButton from "./BackButton";
 import { useTheme } from "./ThemeContext";
+import { CameraSetupProps, CapturedImage } from "../types";
 
 // Orientation detection using Screen Orientation API (with fallback)
-function useLandscape() {
-  const getIsPortrait = () => {
+function useLandscape(): boolean {
+  const getIsPortrait = (): boolean => {
     if (window.screen.orientation && window.screen.orientation.type) {
       return window.screen.orientation.type.startsWith("portrait");
     }
     return window.innerHeight > window.innerWidth;
   };
 
-  const [isPortrait, setIsPortrait] = useState(getIsPortrait());
+  const [isPortrait, setIsPortrait] = useState<boolean>(getIsPortrait());
 
   useEffect(() => {
-    function updateOrientation() {
+    function updateOrientation(): void {
       setIsPortrait(getIsPortrait());
     }
     window.addEventListener("orientationchange", updateOrientation);
@@ -29,24 +30,33 @@ function useLandscape() {
   return !isPortrait; // returns true if landscape
 }
 
-export default function CameraSetup({ layout, onBack, onDone }) {
+interface CameraSize {
+  width: number;
+  height: number;
+}
+
+type CameraStep = "start" | "preview" | "countdown" | "done";
+
+interface CapturedImageWithGif extends CapturedImage {
+  gif?: string | null;
+}
+
+export default function CameraSetup({ layout, onBack, onDone }: CameraSetupProps): React.JSX.Element {
   const { colors, isDarkMode } = useTheme();
-  const shots = layout?.shots || 1;
-  const cameraRef = useRef(null);
-  const [captured, setCaptured] = useState([]);
-  const [step, setStep] = useState("start"); // 'start', 'preview', 'countdown', 'done'
-  const [showInstructions, setShowInstructions] = useState(false);
-  const [countdown, setCountdown] = useState(null);
-  const [cameraSize, setCameraSize] = useState({ width: 640, height: 480 });
-  const [mediaRecorder, setMediaRecorder] = useState(null);
-  const [recordedChunks, setRecordedChunks] = useState([]);
-  const [isRecording, setIsRecording] = useState(false);
+  const shots: number = layout?.shots || 1;
+  const cameraRef = useRef<any>(null);
+  const [captured, setCaptured] = useState<CapturedImageWithGif[]>([]);
+  const [step, setStep] = useState<CameraStep>("start");
+  const [showInstructions, setShowInstructions] = useState<boolean>(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const [cameraSize, setCameraSize] = useState<CameraSize>({ width: 640, height: 480 });
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
 
   const isLandscape = useLandscape();
 
   // Set camera size on mount and resize
   useEffect(() => {
-    const updateCameraSize = () => {
+    const updateCameraSize = (): void => {
       const width = Math.min(window.innerWidth * 0.95, 640);
       const height = Math.round(width * 0.75); // 4:3 aspect ratio
       setCameraSize({ width, height });
@@ -57,83 +67,22 @@ export default function CameraSetup({ layout, onBack, onDone }) {
     return () => window.removeEventListener('resize', updateCameraSize);
   }, []);
 
-  const startRecording = useCallback(async () => {
-    if (!cameraRef.current) return;
-    
-    setRecordedChunks([]);
-    const stream = cameraRef.current.takePhotoStream();
-    if (!stream) return;
-    
-    try {
-      const options = { mimeType: 'video/webm;codecs=vp9' };
-      const mediaRecorder = new MediaRecorder(stream, options);
-      let chunks = [];
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          chunks.push(event.data);
-        }
-      };
-      
-      mediaRecorder.onstop = async () => {
-        const blob = new Blob(chunks, { type: 'video/webm' });
-        const url = URL.createObjectURL(blob);
-        
-        // Dynamically import gifshot
-        const gifshot = (await import('gifshot')).default;
-        
-        gifshot.createGIF({
-          video: [url],
-          gifWidth: 640,
-          gifHeight: 480,
-          frameDuration: 0.1,
-          progressCallback: function(progress) {
-            console.log('GIF creation progress:', progress);
-          }
-        }, function(obj) {
-          if (!obj.error) {
-            setCaptured((prev) => {
-              const updated = [...prev, { photo: cameraRef.current.takePhoto(), gif: obj.image }];
-              return updated;
-            });
-            if (mediaRecorder) {
-              mediaRecorder.stop();
-            }
-            if (captured.length + 1 < shots) {
-              setStep("preview");
-            } else {
-              setStep("done");
-            }
-          } else {
-            console.error('GIF creation error:', obj.error);
-          }
-          URL.revokeObjectURL(url);
-        });
-      };
-      
-      mediaRecorder.start();
-      setMediaRecorder(mediaRecorder);
-      setIsRecording(true);
-    } catch (error) {
-      console.error('Error starting recording:', error);
-    }
-  }, [shots, cameraRef, setCaptured, setStep]);
 
   // Countdown logic
   useEffect(() => {
     if (countdown === null) return;
-    let recorder = null;
-    let chunks = [];
+    let recorder: MediaRecorder | null = null;
+    let chunks: Blob[] = [];
     if (countdown === 3) {
       // Start recording at the beginning of countdown
-      setRecordedChunks([]); // Reset for each shot
-      const video = document.querySelector("video");
+      const video = document.querySelector("video") as HTMLVideoElement;
       if (video) {
-        const stream = video.captureStream();
-        recorder = new window.MediaRecorder(stream, { mimeType: "video/webm" });
-        recorder.ondataavailable = (e) => {
+        const stream = (video as any).captureStream();
+        recorder = new MediaRecorder(stream, { mimeType: "video/webm" });
+        recorder.ondataavailable = (e: BlobEvent): void => {
           if (e.data.size > 0) chunks.push(e.data);
         };
-        recorder.onstop = async () => {
+        recorder.onstop = async (): Promise<void> => {
           // Create GIF from video
           const videoBlob = new Blob(chunks, { type: "video/webm" });
           const url = URL.createObjectURL(videoBlob);
@@ -147,8 +96,8 @@ export default function CameraSetup({ layout, onBack, onDone }) {
             gifHeight: 240,
             numFrames: 10,
             frameDuration: 0.2,
-          }, function(obj) {
-            setCaptured((prev) => {
+          }, function(obj: any): void {
+            setCaptured((prev: CapturedImageWithGif[]) => {
               // Update the last entry with the gif
               const updated = [...prev];
               if (updated.length > 0) {
@@ -160,16 +109,20 @@ export default function CameraSetup({ layout, onBack, onDone }) {
           });
         };
         recorder.start();
-        setMediaRecorder(recorder);
+        mediaRecorderRef.current = recorder;
       }
     }
     if (countdown === 0) {
       setTimeout(() => {
         if (cameraRef.current) {
-          const photo = cameraRef.current.takePhoto();
-          setCaptured((prev) => [...prev, { photo, gif: null }]);
-          if (mediaRecorder) {
-            mediaRecorder.stop();
+          const photo: string = cameraRef.current.takePhoto();
+          setCaptured((prev: CapturedImageWithGif[]) => [...prev, { 
+            photo, 
+            timestamp: Date.now(),
+            gif: null 
+          }]);
+          if (mediaRecorderRef.current) {
+            mediaRecorderRef.current.stop();
           }
           if (captured.length + 1 < shots) {
             setStep("preview");
@@ -181,24 +134,24 @@ export default function CameraSetup({ layout, onBack, onDone }) {
       }, 300);
       return;
     }
-    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    const timer = setTimeout(() => setCountdown((c) => c! - 1), 1000);
     return () => clearTimeout(timer);
-  }, [countdown, shots]);
+  }, [countdown, shots, captured.length]);
 
   // Reset session
-  const handleStartOrRetake = () => {
+  const handleStartOrRetake = (): void => {
     setCaptured([]);
     setStep("start");
     setCountdown(null);
   };
 
   // Handler to start session
-  const handleStartSession = () => {
+  const handleStartSession = (): void => {
     setStep("preview");
   };
 
   // Handler to start countdown for each shot
-  const handleStartCountdown = () => {
+  const handleStartCountdown = (): void => {
     setCountdown(3);
     setStep("countdown");
   };
@@ -389,7 +342,7 @@ export default function CameraSetup({ layout, onBack, onDone }) {
           </button>
           <button
             className={`px-8 py-4 ${colors.button} text-white rounded-xl shadow transition text-xl font-semibold`}
-            onClick={() => onDone(captured)}
+            onClick={() => onDone(captured as CapturedImage[])}
           >
             Choose Strip Design
           </button>

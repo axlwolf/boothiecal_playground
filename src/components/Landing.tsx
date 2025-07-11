@@ -1,9 +1,10 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useTheme } from "./ThemeContext";
+import { LandingProps } from "../types";
 
-export default function Landing({ onStart }) {
+const Landing: React.FC<LandingProps> = ({ onStart }) => {
   const { colors } = useTheme();
-  const [cardHovered, setCardHovered] = useState(false);
+  const [cardHovered, setCardHovered] = useState<boolean>(false);
 
   return (
     <div
@@ -226,4 +227,6 @@ export default function Landing({ onStart }) {
       </footer>
     </div>
   );
-}
+};
+
+export default Landing;

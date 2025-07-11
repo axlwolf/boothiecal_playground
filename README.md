@@ -289,6 +289,53 @@ This will build the project and deploy it to the configured GitHub Pages URL.
 
 This project is licensed under the MIT License.
 
+## 🛠️ Git Configuration for Multiple GitHub Accounts
+
+If you're using multiple GitHub accounts and encounter authentication issues when pushing to this repository, follow these steps:
+
+1. **Check your SSH configuration**:
+   ```bash
+   # View your SSH config
+   cat ~/.ssh/config
+   ```
+
+2. **Configure SSH for multiple accounts** (if not already done):
+   ```bash
+   # Edit SSH config
+   nano ~/.ssh/config
+   ```
+   
+   Add configuration like this:
+   ```
+   # Main account
+   Host github.com
+       HostName github.com
+       User git
+       IdentityFile ~/.ssh/id_rsa
+   
+   # Secondary account (axlwolf)
+   Host github-axlwolf
+       HostName github.com
+       User git
+       IdentityFile ~/.ssh/id_ed25519_axlwolf
+   ```
+
+3. **Set the correct remote URL for this repository**:
+   ```bash
+   # Remove existing remote
+   git remote remove origin
+   
+   # Add remote with the correct host alias
+   git remote add origin git@github-axlwolf:axlwolf/boothiecal_playground.git
+   ```
+
+4. **Push to the repository using the configured remote**:
+   ```bash
+   git push -u origin main
+   ```
+
+This configuration allows Git to use the correct SSH key for each GitHub account.
+
 ## 🙏 Acknowledgments
 
 - Built with React and Vite
