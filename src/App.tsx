@@ -1,11 +1,11 @@
+import React, { useState } from "react";
 import Landing from "./components/Landing";
 import Photobooth from "./components/Photobooth";
 import { ThemeProvider } from "./components/ThemeContext";
 import ThemeToggle from "./components/ThemeToggle";
-import { useState } from "react";
 
-export default function App() {
-  const [showBooth, setShowBooth] = useState(false);
+const App: React.FC = () => {
+  const [showBooth, setShowBooth] = useState<boolean>(false);
 
   return (
     <ThemeProvider>
@@ -17,4 +17,6 @@ export default function App() {
       )}
     </ThemeProvider>
   );
-}
+};
+
+export default App;

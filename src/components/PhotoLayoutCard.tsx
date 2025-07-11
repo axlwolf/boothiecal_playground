@@ -1,9 +1,16 @@
-
+import React from 'react';
 import frameMappings from "./frameMappings";
 import FrameLayout from "./FrameLayout";
 import { useTheme } from "./ThemeContext";
+import { DesignOverlay } from "../types";
 
-export default function PhotoLayoutCard({ images, filters, selectedDesign }) {
+interface PhotoLayoutCardProps {
+  images: string[];
+  filters: string[];
+  selectedDesign?: DesignOverlay;
+}
+
+export default function PhotoLayoutCard({ images, filters, selectedDesign }: PhotoLayoutCardProps): React.ReactElement {
   const { colors } = useTheme();
   const mappingKey = selectedDesign?.key;
   const mapping = mappingKey ? frameMappings[mappingKey] : null;

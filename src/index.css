@@ -31,6 +31,12 @@ button, a, [role="button"] {
   animation: eleganciaGradient 20s ease-in-out infinite;
 }
 
+.light-animated-bg {
+  background: linear-gradient(120deg, #f8fafc, #f1f5f9, #e2e8f0, #f8fafc, #f1f5f9);
+  background-size: 400% 400%;
+  animation: eleganciaGradient 20s ease-in-out infinite;
+}
+
 @keyframes eleganciaGradient {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }

@@ -1,6 +1,10 @@
+import React from "react";
 import { useTheme } from "./ThemeContext";
+import { BasicComponentProps } from "../types";
 
-export default function AppLayout({ children }) {
+interface AppLayoutProps extends BasicComponentProps {}
+
+const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const { colors } = useTheme();
 
   return (
@@ -11,5 +15,7 @@ export default function AppLayout({ children }) {
       </div>
     </div>
   );
-}
+};
+
+export default AppLayout;
 

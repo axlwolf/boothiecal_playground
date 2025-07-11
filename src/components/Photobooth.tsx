@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import StripLayoutSelection from "./StripLayoutSelection";
 import CameraSetup from "./CameraSetup";
 import AppLayout from "./AppLayout";
@@ -6,59 +6,60 @@ import StripDesign from "./StripDesign";
 import BackButton from "./BackButton";
 import NextButton from "./NextButton";
 import { useTheme } from "./ThemeContext";
+import { PhotoboothProps, LayoutOption, CapturedImage, DesignOverlay } from "../types";
 
 // Example overlays for each layout (replace with your own PNG/SVG overlays)
 //3 images do not fit the card, need to specify the two overlay per row thing, and as no of designs increases so does pagination 
-const designOverlaysByLayout = {
+const designOverlaysByLayout: Record<number, DesignOverlay[]> = {
   1: [
-    { key: "1shot-design1", url: "/photobooth-web/designs/1shot-design1.png" },
-    { key: "1shot-design2", url: "/photobooth-web/designs/1shot-design2.png" },
-    { key: "1shot-design3", url: "/photobooth-web/designs/1shot-design3.png" },
-    { key: "1shot-design4", url: "/photobooth-web/designs/1shot-design4.png" },
-    { key: "1shot-design5", url: "/photobooth-web/designs/1shot-design5.png" },
-    { key: "1shot-design6", url: "/photobooth-web/designs/1shot-design6.png" },
-    { key: "1shot-design7", url: "/photobooth-web/designs/1shot-design7.png" },
-    { key: "1shot-design8", url: "/photobooth-web/designs/1shot-design8.png" },
-    { key: "1shot-design9", url: "/photobooth-web/designs/1shot-design9.png" },
-    { key: "1shot-design10", url: "/photobooth-web/designs/1shot-design10.png" },
+    { key: "1shot-design1", url: "/boothiecal_playground/designs/1shot-design1.png" },
+    { key: "1shot-design2", url: "/boothiecal_playground/designs/1shot-design2.png" },
+    { key: "1shot-design3", url: "/boothiecal_playground/designs/1shot-design3.png" },
+    { key: "1shot-design4", url: "/boothiecal_playground/designs/1shot-design4.png" },
+    { key: "1shot-design5", url: "/boothiecal_playground/designs/1shot-design5.png" },
+    { key: "1shot-design6", url: "/boothiecal_playground/designs/1shot-design6.png" },
+    { key: "1shot-design7", url: "/boothiecal_playground/designs/1shot-design7.png" },
+    { key: "1shot-design8", url: "/boothiecal_playground/designs/1shot-design8.png" },
+    { key: "1shot-design9", url: "/boothiecal_playground/designs/1shot-design9.png" },
+    { key: "1shot-design10", url: "/boothiecal_playground/designs/1shot-design10.png" },
 
   ],
   3: [
-    { key: "3shot-design1", url: "/photobooth-web/designs/3shot-design1.png" },
-    { key: "3shot-design2", url: "/photobooth-web/designs/3shot-design2.png" },
-    { key: "3shot-design3", url: "/photobooth-web/designs/3shot-design3.png" },
-    { key: "3shot-design4", url: "/photobooth-web/designs/3shot-design4.png" },
-    { key: "3shot-design5", url: "/photobooth-web/designs/3shot-design5.png" },
+    { key: "3shot-design1", url: "/boothiecal_playground/designs/3shot-design1.png" },
+    { key: "3shot-design2", url: "/boothiecal_playground/designs/3shot-design2.png" },
+    { key: "3shot-design3", url: "/boothiecal_playground/designs/3shot-design3.png" },
+    { key: "3shot-design4", url: "/boothiecal_playground/designs/3shot-design4.png" },
+    { key: "3shot-design5", url: "/boothiecal_playground/designs/3shot-design5.png" },
     
   ],
   4: [
-    { key: "4shot-design1", url: "/photobooth-web/designs/4shot-design1.png" },
-    { key: "4shot-design2", url: "/photobooth-web/designs/4shot-design2.png" },
-    { key: "4shot-design3", url: "/photobooth-web/designs/4shot-design3.png" },
-    { key: "4shot-design4", url: "/photobooth-web/designs/4shot-design4.png" },
-    { key: "4shot-design5", url: "/photobooth-web/designs/4shot-design5.png" },
+    { key: "4shot-design1", url: "/boothiecal_playground/designs/4shot-design1.png" },
+    { key: "4shot-design2", url: "/boothiecal_playground/designs/4shot-design2.png" },
+    { key: "4shot-design3", url: "/boothiecal_playground/designs/4shot-design3.png" },
+    { key: "4shot-design4", url: "/boothiecal_playground/designs/4shot-design4.png" },
+    { key: "4shot-design5", url: "/boothiecal_playground/designs/4shot-design5.png" },
    
   ],
   6: [
-    { key: "6shot-design1", url: "/photobooth-web/designs/6shot-design1.png" },
-    { key: "6shot-design2", url: "/photobooth-web/designs/6shot-design2.png" },
-    { key: "6shot-design3", url: "/photobooth-web/designs/6shot-design3.png" }
+    { key: "6shot-design1", url: "/boothiecal_playground/designs/6shot-design1.png" },
+    { key: "6shot-design2", url: "/boothiecal_playground/designs/6shot-design2.png" },
+    { key: "6shot-design3", url: "/boothiecal_playground/designs/6shot-design3.png" }
     
 
   ],
 };
 
 
-export default function Photobooth({ onBack }) {
+const Photobooth: React.FC<PhotoboothProps> = ({ onBack }) => {
   const { colors } = useTheme();
-  const [layout, setLayout] = useState(null);
-  const [showCamera, setShowCamera] = useState(false);
-  const [capturedImages, setCapturedImages] = useState(null);
-  const [showStripDesign, setShowStripDesign] = useState(false);
-  const [selectedDesign, setSelectedDesign] = useState(null);
+  const [layout, setLayout] = useState<LayoutOption | null>(null);
+  const [showCamera, setShowCamera] = useState<boolean>(false);
+  const [capturedImages, setCapturedImages] = useState<CapturedImage[] | null>(null);
+  const [showStripDesign, setShowStripDesign] = useState<boolean>(false);
+  const [selectedDesign, setSelectedDesign] = useState<DesignOverlay | null>(null);
 
   // Download handler for photo strip
-  const handleDownload = (dataUrl, filename = "photobooth-strip.png") => {
+  const handleDownload = (dataUrl: string, filename: string = "photobooth-strip.png"): void => {
     const link = document.createElement("a");
     link.href = dataUrl;
     link.download = filename;
@@ -68,7 +69,7 @@ export default function Photobooth({ onBack }) {
   };
 
   // Get overlays for the current layout (by shots or id)
-  const designOverlays =
+  const designOverlays: DesignOverlay[] =
     layout && designOverlaysByLayout[layout.shots]
       ? designOverlaysByLayout[layout.shots]
       : [];
@@ -144,4 +145,6 @@ export default function Photobooth({ onBack }) {
       </div>
     </AppLayout>
   );
-}
+};
+
+export default Photobooth;
