@@ -1,26 +1,41 @@
-
-import { useState } from "react";
+import React, { useState } from "react";
 import BackButton from "./BackButton";
-import { FilterCarousel } from "./FilterCarousel"; // Import the carousel
+import { FilterCarousel } from "./FilterCarousel";
 import { useTheme } from "./ThemeContext";
+import { FilterOption, DesignOverlay } from "../types";
 
-const FILTERS = [
-  { name: "None", value: "" },
-  { name: "Noir", value: "grayscale(1) contrast(1.2) brightness(0.8)" },
-  { name: "Vintage", value: "sepia(0.6) contrast(1.1) brightness(0.9) saturate(0.8)" },
-  { name: "Glam", value: "brightness(1.2) contrast(1.1) blur(1px)" },
-  { name: "Pencil Sketch", value: "grayscale(1) contrast(2) brightness(1.2)" },
-  { name: "Extra Sharp", value: "contrast(1.5) brightness(1.1)" },
-  { name: "Warm", value: "sepia(0.2) hue-rotate(5deg) brightness(1.1)" },
-  { name: "Cool", value: "hue-rotate(25deg) saturate(1.1) brightness(1.05)" },
-  { name: "Faded", value: "contrast(0.8) brightness(1.1) saturate(0.7)" },
-  { name: "Black & White", value: "grayscale(1)" },
-  { name: "Sepia", value: "sepia(1)" },
-  { name: "Brightness", value: "brightness(1.3)" },
-  { name: "Contrast", value: "contrast(1.5)" },
-  { name: "Blur", value: "blur(2px)" },
-  { name: "Invert", value: "invert(1)" },
+type CameraStep = "filters" | "design";
+
+const FILTERS: FilterOption[] = [
+  { name: "None", value: "", cssFilter: "" },
+  { name: "Noir", value: "grayscale(1) contrast(1.2) brightness(0.8)", cssFilter: "grayscale(1) contrast(1.2) brightness(0.8)" },
+  { name: "Vintage", value: "sepia(0.6) contrast(1.1) brightness(0.9) saturate(0.8)", cssFilter: "sepia(0.6) contrast(1.1) brightness(0.9) saturate(0.8)" },
+  { name: "Glam", value: "brightness(1.2) contrast(1.1) blur(1px)", cssFilter: "brightness(1.2) contrast(1.1) blur(1px)" },
+  { name: "Pencil Sketch", value: "grayscale(1) contrast(2) brightness(1.2)", cssFilter: "grayscale(1) contrast(2) brightness(1.2)" },
+  { name: "Extra Sharp", value: "contrast(1.5) brightness(1.1)", cssFilter: "contrast(1.5) brightness(1.1)" },
+  { name: "Warm", value: "sepia(0.2) hue-rotate(5deg) brightness(1.1)", cssFilter: "sepia(0.2) hue-rotate(5deg) brightness(1.1)" },
+  { name: "Cool", value: "hue-rotate(25deg) saturate(1.1) brightness(1.05)", cssFilter: "hue-rotate(25deg) saturate(1.1) brightness(1.05)" },
+  { name: "Faded", value: "contrast(0.8) brightness(1.1) saturate(0.7)", cssFilter: "contrast(0.8) brightness(1.1) saturate(0.7)" },
+  { name: "Black & White", value: "grayscale(1)", cssFilter: "grayscale(1)" },
+  { name: "Sepia", value: "sepia(1)", cssFilter: "sepia(1)" },
+  { name: "Brightness", value: "brightness(1.3)", cssFilter: "brightness(1.3)" },
+  { name: "Contrast", value: "contrast(1.5)", cssFilter: "contrast(1.5)" },
+  { name: "Blur", value: "blur(2px)", cssFilter: "blur(2px)" },
+  { name: "Invert", value: "invert(1)", cssFilter: "invert(1)" },
 ];
+
+interface ControlsCardProps {
+  step: CameraStep;
+  setStep: React.Dispatch<React.SetStateAction<CameraStep>>;
+  filters: string[];
+  setFilters: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedDesign: DesignOverlay | null;
+  setSelectedDesign: (design: DesignOverlay | null) => void;
+  images: string[]; // Array de data URLs de imágenes
+  designs: DesignOverlay[];
+  onDownload: (dataUrl: string, filename?: string) => void;
+  onBack: () => void;
+}
 
 export default function ControlsCard({
   step,
@@ -33,9 +48,10 @@ export default function ControlsCard({
   designs,
   onDownload,
   onBack,
-}) {
-  const { colors } = useTheme();
-  const [activeFilter, setActiveFilter] = useState(null);
+}: ControlsCardProps): React.JSX.Element | null {
+  const { colors, isDarkMode } = useTheme();
+  const [activeFilter, setActiveFilter] = useState<number | null>(null);
+  const [page, setPage] = useState<number>(0);
 
   if (step === "filters") {
     return (
@@ -64,7 +80,6 @@ export default function ControlsCard({
   // DESIGN SELECTION STEP
   if (step === "design") {
     const pageSize = 4; // Show 4 designs at a time
-    const [page, setPage] = useState(0);
     const pageCount = Math.ceil(designs.length / pageSize);
     const start = page * pageSize;
     const paginatedDesigns = designs.slice(start, start + pageSize);
@@ -77,15 +92,11 @@ export default function ControlsCard({
             <button
               key={start + i}
               onClick={() => setSelectedDesign(design)}
-              className={`border-2 rounded-xl p-1 transition ${
-                selectedDesign === design
-                  ? `${colors.border} shadow-lg`
-                  : "border-transparent"
-              }`}
+              className={`border-2 rounded-xl p-1 transition ${selectedDesign === design ? `${colors.border} shadow-lg` : "border-transparent"}`}
             >
-              <div className={`w-32 h-28 flex items-center justify-center ${colors.isDarkMode ? 'bg-gray-700' : 'bg-gray-50'} rounded-lg overflow-hidden`}>
+              <div className={`w-32 h-28 flex items-center justify-center ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'} rounded-lg overflow-hidden`}>
                 <img
-                  src={design}
+                  src={design.url}
                   alt={`Design ${start + i + 1}`}
                   className="w-full h-full object-contain"
                 />
@@ -105,7 +116,7 @@ export default function ControlsCard({
                 &lt;
               </button>
             )}
-            <span className={`text-sm ${colors.isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+            <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               {page + 1} of {pageCount}
             </span>
             {page < pageCount - 1 && (
@@ -121,7 +132,7 @@ export default function ControlsCard({
         )}
         <button
           className={`mt-8 px-6 py-2 rounded-full bg-gradient-to-r ${colors.primaryGradient} text-white font-semibold shadow hover:${colors.primaryGradientHover} transition-all duration-200`}
-          onClick={onDownload}
+          onClick={() => onDownload(selectedDesign?.url || '', 'photobooth-strip.png')}
           disabled={!selectedDesign}
         >
           Download Strip
@@ -135,6 +146,9 @@ export default function ControlsCard({
       </div>
     );
   }
+
+  // Default fallback
+  return null;
 }
 
 // I want the filters to mimic their real use, like the cool effect just make the image hues of blue, that shouldn't happen, also is it possible to center the card accordingly to the frame layout bceause for 3 , 4 and 6 shot, the frames are quite large making the controls card look small

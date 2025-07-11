@@ -1,7 +1,9 @@
+import { FrameMapping } from "../types";
+
 //used to map the photo frames to the captured image for all types of shots
-const frameMappings = {
+const frameMappings: Record<string, FrameMapping> = {
   "1shot-design1": {
-    frame: "/photobooth-web/designs/1shot-design1.png",
+    frame: "/boothiecal_playground/designs/1shot-design1.png",
     frameWidth: 350,
     frameHeight: 430,
     windows: [
@@ -9,7 +11,7 @@ const frameMappings = {
     ],
   },
   "1shot-design2": {
-    frame: "/photobooth-web/designs/1shot-design2.png",
+    frame: "/boothiecal_playground/designs/1shot-design2.png",
     frameWidth: 500,
     frameHeight: 375,
     windows: [
@@ -17,7 +19,7 @@ const frameMappings = {
     ],
   },
   "1shot-design3": {
-    frame: "/photobooth-web/designs/1shot-design3.png",
+    frame: "/boothiecal_playground/designs/1shot-design3.png",
     frameWidth: 400,
     frameHeight: 500,
     windows: [
@@ -25,7 +27,7 @@ const frameMappings = {
     ],
   },
   "1shot-design4": {
-    frame: "/photobooth-web/designs/1shot-design4.png",
+    frame: "/boothiecal_playground/designs/1shot-design4.png",
     frameWidth: 500,
     frameHeight: 450,
     windows: [
@@ -33,7 +35,7 @@ const frameMappings = {
     ],
   },
   "1shot-design5": {
-    frame: "/photobooth-web/designs/1shot-design5.png",
+    frame: "/boothiecal_playground/designs/1shot-design5.png",
     frameWidth: 600,
     frameHeight: 375,
     windows: [
@@ -41,7 +43,7 @@ const frameMappings = {
     ],
   },
   "1shot-design6": {
-    frame: "/photobooth-web/designs/1shot-design6.png",
+    frame: "/boothiecal_playground/designs/1shot-design6.png",
     frameWidth: 530,
     frameHeight: 535,
     windows: [
@@ -49,7 +51,7 @@ const frameMappings = {
     ],
   },
   "1shot-design7": {
-    frame: "/photobooth-web/designs/1shot-design7.png",
+    frame: "/boothiecal_playground/designs/1shot-design7.png",
     frameWidth: 550,
     frameHeight: 350,
     windows: [
@@ -57,7 +59,7 @@ const frameMappings = {
     ],
   },
   "1shot-design8": {
-    frame: "/photobooth-web/designs/1shot-design8.png",
+    frame: "/boothiecal_playground/designs/1shot-design8.png",
     frameWidth: 500,
     frameHeight: 500,
     windows: [
@@ -65,7 +67,7 @@ const frameMappings = {
     ],
   },
   "1shot-design9": {
-    frame: "/photobooth-web/designs/1shot-design9.png",
+    frame: "/boothiecal_playground/designs/1shot-design9.png",
     frameWidth: 500,
     frameHeight: 630,
     windows: [
@@ -74,7 +76,7 @@ const frameMappings = {
   },
 
   "1shot-design10": {
-    frame: "/photobooth-web/designs/1shot-design10.png",
+    frame: "/boothiecal_playground/designs/1shot-design10.png",
     frameWidth: 500,
     frameHeight: 330,
     windows: [
@@ -83,7 +85,7 @@ const frameMappings = {
   },
 
   "3shot-design1": {
-    frame: "/photobooth-web/designs/3shot-design1.png",
+    frame: "/boothiecal_playground/designs/3shot-design1.png",
     frameWidth: 450,
     frameHeight: 1000,
     windows: [
@@ -93,7 +95,7 @@ const frameMappings = {
     ],
   },
   "3shot-design2": {
-    frame: "/photobooth-web/designs/3shot-design2.png",
+    frame: "/boothiecal_playground/designs/3shot-design2.png",
     frameWidth: 450,
     frameHeight: 1000,
     windows: [
@@ -103,7 +105,7 @@ const frameMappings = {
     ],
   },
   "3shot-design3": {
-    frame: "/photobooth-web/designs/3shot-design3.png",
+    frame: "/boothiecal_playground/designs/3shot-design3.png",
     frameWidth: 496,
     frameHeight: 1200,
     windows: [
@@ -114,7 +116,7 @@ const frameMappings = {
   },
   
   "3shot-design4": {
-    frame: "/photobooth-web/designs/3shot-design4.png",
+    frame: "/boothiecal_playground/designs/3shot-design4.png",
     frameWidth: 350,
     frameHeight: 1100,
     windows: [
@@ -124,7 +126,7 @@ const frameMappings = {
     ],
   },
   "3shot-design5": {
-    frame: "/photobooth-web/designs/3shot-design5.png",
+    frame: "/boothiecal_playground/designs/3shot-design5.png",
     frameWidth: 450,
     frameHeight: 1000,
     windows: [
@@ -134,7 +136,7 @@ const frameMappings = {
     ],
   },
   "4shot-design1": {
-    frame: "/photobooth-web/designs/4shot-design1.png",
+    frame: "/boothiecal_playground/designs/4shot-design1.png",
     frameWidth: 525,
     frameHeight: 1259,
     windows: [
@@ -145,7 +147,7 @@ const frameMappings = {
     ],
   },
   "4shot-design2": {
-    frame: "/photobooth-web/designs/4shot-design2.png",
+    frame: "/boothiecal_playground/designs/4shot-design2.png",
     frameWidth: 500,
     frameHeight: 1200,
     windows: [
@@ -156,7 +158,7 @@ const frameMappings = {
     ],
   },
   "4shot-design3": {
-    frame: "/photobooth-web/designs/4shot-design3.png",
+    frame: "/boothiecal_playground/designs/4shot-design3.png",
     frameWidth: 525,
     frameHeight: 1259,
     windows: [
@@ -167,7 +169,7 @@ const frameMappings = {
     ],
   },
   "4shot-design4": {
-    frame: "/photobooth-web/designs/4shot-design4.png",
+    frame: "/boothiecal_playground/designs/4shot-design4.png",
     frameWidth: 500,
     frameHeight: 1200,
     windows: [
@@ -178,7 +180,7 @@ const frameMappings = {
     ],
   },
   "4shot-design5": {
-    frame: "/photobooth-web/designs/4shot-design5.png",
+    frame: "/boothiecal_playground/designs/4shot-design5.png",
     frameWidth: 525,
     frameHeight: 1259,
     windows: [
@@ -189,7 +191,7 @@ const frameMappings = {
     ],
   },
   "6shot-design1": {
-    frame: "/photobooth-web/designs/6shot-design1.png",
+    frame: "/boothiecal_playground/designs/6shot-design1.png",
     frameWidth: 525,
     frameHeight: 1000,
     windows: [
@@ -202,7 +204,7 @@ const frameMappings = {
     ],
   },
   "6shot-design2": {
-    frame: "/photobooth-web/designs/6shot-design2.png",
+    frame: "/boothiecal_playground/designs/6shot-design2.png",
     frameWidth: 525,
     frameHeight: 1000,
     windows: [
@@ -215,7 +217,7 @@ const frameMappings = {
     ],
   },
   "6shot-design3": {
-    frame: "/photobooth-web/designs/6shot-design3.png",
+    frame: "/boothiecal_playground/designs/6shot-design3.png",
     frameWidth: 525,
     frameHeight: 1100,
     windows: [
@@ -228,7 +230,7 @@ const frameMappings = {
     ],
   },
   // "6shot-design4": {
-  //   frame: "/photobooth-web/designs/6shot-design4.png",
+  //   frame: "/boothiecal_playground/designs/6shot-design4.png",
   //   frameWidth: 525,
   //   frameHeight: 1000,
   //   windows: [

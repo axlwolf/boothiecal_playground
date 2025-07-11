@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PhotoLayoutCard from "./PhotoLayoutCard";
 import ControlsCard from "./ControlsCard";
 import BackButton from "./BackButton";
@@ -6,15 +6,22 @@ import NextButton from "./NextButton";
 import frameMappings from "./frameMappings";
 import { parseGIF, decompressFrames } from 'gifuct-js';
 import { useTheme } from "./ThemeContext";
+import { StripDesignProps, DesignOverlay, CapturedImage } from "../types";
+
+interface DesignGridProps {
+  designs: DesignOverlay[];
+  selectedDesign: DesignOverlay | null | undefined;
+  onSelectDesign: (design: DesignOverlay) => void;
+}
 
 // PAGINATED DESIGN GRID
-function DesignGrid({ designs, selectedDesign, onSelectDesign }) {
-  const { colors } = useTheme();
-  const pageSize = 2; // 2 per row × 2 rows
-  const [page, setPage] = useState(0);
-  const pageCount = Math.ceil(designs.length / pageSize);
-  const start = page * pageSize;
-  const paginatedDesigns = designs.slice(start, start + pageSize);
+function DesignGrid({ designs, selectedDesign, onSelectDesign }: DesignGridProps): React.JSX.Element {
+  const { colors, isDarkMode } = useTheme();
+  const pageSize: number = 2; // 2 per row × 2 rows
+  const [page, setPage] = useState<number>(0);
+  const pageCount: number = Math.ceil(designs.length / pageSize);
+  const start: number = page * pageSize;
+  const paginatedDesigns: DesignOverlay[] = designs.slice(start, start + pageSize);
 
   return (
     <>
@@ -25,7 +32,7 @@ function DesignGrid({ designs, selectedDesign, onSelectDesign }) {
             className={`border-2 rounded-lg p-2 cursor-pointer transition ${
               selectedDesign?.key === design.key
                 ? `${colors.border} ring-2 ring-${colors.primary}-300`
-                : colors.isDarkMode ? "border-gray-600" : "border-gray-200"
+                : isDarkMode ? "border-gray-600" : "border-gray-200"
             }`}
             onClick={() => onSelectDesign(design)}
           >
@@ -37,7 +44,7 @@ function DesignGrid({ designs, selectedDesign, onSelectDesign }) {
         {page > 0 && (
           <button
             onClick={() => setPage((p) => Math.max(0, p - 1))}
-            className={`px-2 py-1 rounded ${colors.isDarkMode ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-100 hover:bg-gray-200"} transition`}
+            className={`px-2 py-1 rounded ${isDarkMode ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-100 hover:bg-gray-200"} transition`}
           >
             Previous
           </button>
@@ -46,7 +53,7 @@ function DesignGrid({ designs, selectedDesign, onSelectDesign }) {
           <button
             key={idx}
             className={`px-2 py-1 rounded ${
-              page === idx ? `bg-${colors.primary}-200 font-bold` : colors.isDarkMode ? "bg-gray-700" : "bg-gray-100"
+              page === idx ? `bg-${colors.primary}-200 font-bold` : isDarkMode ? "bg-gray-700" : "bg-gray-100"
             }`}
             onClick={() => setPage(idx)}
           >
@@ -56,7 +63,7 @@ function DesignGrid({ designs, selectedDesign, onSelectDesign }) {
         {page < pageCount - 1 && (
           <button
             onClick={() => setPage((p) => Math.min(pageCount - 1, p + 1))}
-            className={`px-2 py-1 rounded ${colors.isDarkMode ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-100 hover:bg-gray-200"} transition`}
+            className={`px-2 py-1 rounded ${isDarkMode ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-100 hover:bg-gray-200"} transition`}
           >
             Next
           </button>
@@ -67,10 +74,10 @@ function DesignGrid({ designs, selectedDesign, onSelectDesign }) {
 }
 
 // Helper: Draw image with "cover" behavior (crops excess, keeps aspect ratio)
-function drawImageCover(ctx, img, x, y, w, h) {
-  const imgAspect = img.width / img.height;
-  const winAspect = w / h;
-  let sx, sy, sw, sh;
+function drawImageCover(ctx: CanvasRenderingContext2D, img: HTMLImageElement, x: number, y: number, w: number, h: number): void {
+  const imgAspect: number = img.width / img.height;
+  const winAspect: number = w / h;
+  let sx: number, sy: number, sw: number, sh: number;
 
   if (imgAspect > winAspect) {
     // Crop left/right
@@ -89,27 +96,30 @@ function drawImageCover(ctx, img, x, y, w, h) {
   ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
 }
 
-export default function StripDesign({ images, designs, onBack, captured = [] }) {
+type StepType = "filters" | "designs";
+type CameraStep = "filters" | "design";
+type DownloadType = "photo" | "gif";
+
+export default function StripDesign({ images, designs, onBack, captured = [], selectedDesign, onSelectDesign }: StripDesignProps): React.JSX.Element {
   const { colors } = useTheme();
-  const [step, setStep] = useState("filters");
-  const [photoFilters, setPhotoFilters] = useState(images.map(() => ""));
-  const [selectedDesign, setSelectedDesign] = useState(designs[0] || null);
-  const [cardAnim, setCardAnim] = useState("card-enter");
-  const [downloadType, setDownloadType] = useState("photo"); // 'photo' or 'gif'
-  const [isDownloading, setIsDownloading] = useState(false);
-  const [overlayImg, setOverlayImg] = useState(null); // Cache for overlay image
+  const [step, setStep] = useState<StepType>("filters");
+  const [photoFilters, setPhotoFilters] = useState<string[]>(images.map(() => ""));
+  const [cardAnim, setCardAnim] = useState<string>("card-enter");
+  const [downloadType, setDownloadType] = useState<DownloadType>("photo");
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
+  const [overlayImg, setOverlayImg] = useState<HTMLImageElement | null>(null); // Cache for overlay image
 
   // Preload overlay image when selectedDesign changes
   useEffect(() => {
     let isMounted = true;
-    async function loadOverlay() {
-      let overlay = null;
+    async function loadOverlay(): Promise<void> {
+      let overlay: HTMLImageElement | null = null;
       if (selectedDesign?.url) {
-        overlay = new window.Image();
+        overlay = new Image();
         overlay.crossOrigin = "anonymous";
         overlay.src = selectedDesign.url;
-        await new Promise((resolve) => {
-          overlay.onload = resolve;
+        await new Promise<void>((resolve) => {
+          overlay!.onload = () => resolve();
         });
       }
       if (isMounted) {
@@ -121,40 +131,40 @@ export default function StripDesign({ images, designs, onBack, captured = [] }) 
   }, [selectedDesign]);
 
   // Download logic with frame mapping support and cropping
-  const handleDownload = async () => {
-    const mappingKey = selectedDesign?.key;
-    const mapping = mappingKey ? frameMappings[mappingKey] : null;
+  const handleDownload = async (): Promise<void> => {
+    const mappingKey: string | undefined = selectedDesign?.key;
+    const mapping: any = mappingKey ? (frameMappings as any)[mappingKey] : null;
 
-    let width, height;
+    let width: number, height: number;
     if (mapping) {
       width = mapping.frameWidth;
       height = mapping.frameHeight;
     } else {
       // fallback grid
-      const isGrid = images.length === 6;
-      const columns = isGrid ? 2 : 1;
-      const imageWidth = 180;
-      const imageHeight = 160;
-      const gap = 16;
-      const rows = Math.ceil(images.length / columns);
+      const isGrid: boolean = images.length === 6;
+      const columns: number = isGrid ? 2 : 1;
+      const imageWidth: number = 180;
+      const imageHeight: number = 160;
+      const gap: number = 16;
+      const rows: number = Math.ceil(images.length / columns);
       width = columns * imageWidth + (columns - 1) * gap;
       height = rows * imageHeight + (rows - 1) * gap;
     }
 
-    const canvas = document.createElement("canvas");
+    const canvas: HTMLCanvasElement = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
-    const ctx = canvas.getContext("2d");
+    const ctx: CanvasRenderingContext2D = canvas.getContext("2d")!;
 
     if (mapping) {
       // Draw each photo in its mapped window, cropping excess
       for (let i = 0; i < mapping.windows.length; i++) {
         const win = mapping.windows[i];
-        const img = new window.Image();
+        const img: HTMLImageElement = new Image();
         img.crossOrigin = "anonymous";
         img.src = images[i];
-        await new Promise((resolve) => {
-          img.onload = () => {
+        await new Promise<void>((resolve) => {
+          img.onload = (): void => {
             ctx.save();
             if (win.borderRadius) {
               ctx.beginPath();
@@ -185,11 +195,11 @@ export default function StripDesign({ images, designs, onBack, captured = [] }) 
       }
       // Draw overlay
       if (selectedDesign?.url) {
-        const overlay = new window.Image();
+        const overlay: HTMLImageElement = new Image();
         overlay.crossOrigin = "anonymous";
         overlay.src = selectedDesign.url;
-        await new Promise((resolve) => {
-          overlay.onload = () => {
+        await new Promise<void>((resolve) => {
+          overlay.onload = (): void => {
             ctx.drawImage(overlay, 0, 0, width, height);
             resolve();
           };
@@ -197,23 +207,22 @@ export default function StripDesign({ images, designs, onBack, captured = [] }) 
       }
     } else {
       // fallback grid logic (your original code)
-      const isGrid = images.length === 6;
-      const columns = isGrid ? 2 : 1;
-      const imageWidth = 180;
-      const imageHeight = 160;
-      const gap = 16;
-      const rows = Math.ceil(images.length / columns);
+      const isGrid: boolean = images.length === 6;
+      const columns: number = isGrid ? 2 : 1;
+      const imageWidth: number = 180;
+      const imageHeight: number = 160;
+      const gap: number = 16;
       for (let i = 0; i < images.length; i++) {
-        const img = new window.Image();
+        const img: HTMLImageElement = new Image();
         img.crossOrigin = "anonymous";
         img.src = images[i];
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
           img.onload = () => {
             ctx.filter = photoFilters[i] || "none";
-            const col = isGrid ? i % 2 : 0;
-            const row = isGrid ? Math.floor(i / 2) : i;
-            const x = col * (imageWidth + gap);
-            const y = row * (imageHeight + gap);
+            const col: number = isGrid ? i % columns : 0;
+            const row: number = isGrid ? Math.floor(i / columns) : i;
+            const x: number = col * (imageWidth + gap);
+            const y: number = row * (imageHeight + gap);
             ctx.drawImage(img, x, y, imageWidth, imageHeight);
             ctx.filter = "none";
             resolve();
@@ -224,7 +233,7 @@ export default function StripDesign({ images, designs, onBack, captured = [] }) 
         const overlay = new window.Image();
         overlay.crossOrigin = "anonymous";
         overlay.src = selectedDesign.url;
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
           overlay.onload = () => {
             ctx.drawImage(overlay, 0, 0, width, height);
             resolve();
@@ -233,8 +242,8 @@ export default function StripDesign({ images, designs, onBack, captured = [] }) 
       }
     }
 
-    const dataUrl = canvas.toDataURL("image/png");
-    const link = document.createElement("a");
+    const dataUrl: string = canvas.toDataURL("image/png");
+    const link: HTMLAnchorElement = document.createElement("a");
     link.href = dataUrl;
     link.download = "photobooth-strip.png";
     document.body.appendChild(link);
@@ -243,58 +252,58 @@ export default function StripDesign({ images, designs, onBack, captured = [] }) 
   };
 
   // GIF strip download logic (uses only the GIFs in captured and overlayImg)
-  const handleDownloadGif = async () => {
+  const handleDownloadGif = async (): Promise<void> => {
     if (!overlayImg || !overlayImg.complete) {
       alert("Frame overlay is still loading. Please wait a moment and try again.");
       return;
     }
     setIsDownloading(true);
-    const mappingKey = selectedDesign?.key;
-    const mapping = mappingKey ? frameMappings[mappingKey] : null;
+    const mappingKey: string | undefined = selectedDesign?.key;
+    const mapping: any = mappingKey ? (frameMappings as any)[mappingKey] : null;
     if (!mapping || !captured.length) {
       setIsDownloading(false);
       return;
     }
-    const width = mapping.frameWidth;
-    const height = mapping.frameHeight;
+    const width: number = mapping.frameWidth;
+    const height: number = mapping.frameHeight;
     // Parse all GIFs and extract frames using gifuct-js
-    const gifFramesArr = await Promise.all(
-      captured.map(async (cap) => {
-        if (!cap.gif) return [];
-        const binary = await fetch(cap.gif).then(r => r.arrayBuffer());
-        const gif = parseGIF(binary);
-        const frames = decompressFrames(gif, true);
+    const gifFramesArr: any[][] = await Promise.all(
+      captured.map(async (cap: CapturedImage): Promise<any[]> => {
+        if (!(cap as any).gif) return [];
+        const binary: ArrayBuffer = await fetch((cap as any).gif).then((r: Response) => r.arrayBuffer());
+        const gif: any = parseGIF(binary);
+        const frames: any[] = decompressFrames(gif, true);
         return frames;
       })
     );
     // Find the minimum number of frames across all GIFs
-    const minFrames = Math.min(...gifFramesArr.map((arr) => arr.length));
+    const minFrames: number = Math.min(...gifFramesArr.map((arr: any[]) => arr.length));
     // For each frame index, composite the GIFs into the strip
-    const frames = [];
+    const frames: string[] = [];
     for (let frameIdx = 0; frameIdx < minFrames; frameIdx++) {
-      const canvas = document.createElement("canvas");
+      const canvas: HTMLCanvasElement = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;
-      const ctx = canvas.getContext("2d");
+      const ctx: CanvasRenderingContext2D = canvas.getContext("2d")!;
       // Draw each GIF frame in its mapped window using drawImageCover
       for (let i = 0; i < mapping.windows.length; i++) {
         const win = mapping.windows[i];
-        const gifFrame = gifFramesArr[i][frameIdx];
+        const gifFrame: any = gifFramesArr[i][frameIdx];
         if (!gifFrame) continue;
         // Create an image from the frame's patch
-        const imageData = ctx.createImageData(gifFrame.dims.width, gifFrame.dims.height);
+        const imageData: ImageData = ctx.createImageData(gifFrame.dims.width, gifFrame.dims.height);
         imageData.data.set(gifFrame.patch);
         // Draw the frame patch to an offscreen canvas
-        const offCanvas = document.createElement('canvas');
+        const offCanvas: HTMLCanvasElement = document.createElement('canvas');
         offCanvas.width = gifFrame.dims.width;
         offCanvas.height = gifFrame.dims.height;
-        const offCtx = offCanvas.getContext('2d');
+        const offCtx: CanvasRenderingContext2D = offCanvas.getContext('2d')!;
         offCtx.putImageData(imageData, 0, 0);
-        const img = new window.Image();
+        const img: HTMLImageElement = new Image();
         img.src = offCanvas.toDataURL();
         // eslint-disable-next-line no-await-in-loop
-        await new Promise((resolve) => {
-          img.onload = () => {
+        await new Promise<void>((resolve) => {
+          img.onload = (): void => {
             ctx.save();
             if (win.borderRadius) {
               ctx.beginPath();
@@ -329,16 +338,16 @@ export default function StripDesign({ images, designs, onBack, captured = [] }) 
     }
     // Use gifshot to create the final GIF
     const gifshot = await import('gifshot');
-    gifshot.createGIF({
+    (gifshot as any).createGIF({
       images: frames,
       gifWidth: width,
       gifHeight: height,
       frameDuration: 0.2,
-      progressCallback: () => {},
-    }, function(obj) {
+      progressCallback: (): void => {},
+    }, function(obj: any): void {
       setIsDownloading(false);
       if (!obj.error) {
-        const link = document.createElement("a");
+        const link: HTMLAnchorElement = document.createElement("a");
         link.href = obj.image;
         link.download = "photobooth-strip.gif";
         document.body.appendChild(link);
@@ -348,7 +357,7 @@ export default function StripDesign({ images, designs, onBack, captured = [] }) 
     });
   };
 
-  const goToStep = (nextStep) => {
+  const goToStep = (nextStep: StepType): void => {
     setCardAnim("card-exit");
     setTimeout(() => {
       setStep(nextStep);
@@ -362,7 +371,7 @@ export default function StripDesign({ images, designs, onBack, captured = [] }) 
         <PhotoLayoutCard
           images={images}
           filters={photoFilters}
-          selectedDesign={selectedDesign}
+          selectedDesign={selectedDesign ?? undefined}
         />
       </div>
       <div className="flex items-center">
@@ -372,7 +381,7 @@ export default function StripDesign({ images, designs, onBack, captured = [] }) 
             <select
               className="border rounded px-2 py-1 text-base"
               value={downloadType}
-              onChange={e => setDownloadType(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setDownloadType(e.target.value as DownloadType)}
               disabled={isDownloading}
             >
               <option value="photo">Download as Photo Strip (PNG)</option>
@@ -382,24 +391,22 @@ export default function StripDesign({ images, designs, onBack, captured = [] }) 
           {step === "filters" ? (
             <ControlsCard
               step={step}
-              setStep={goToStep}
+              setStep={goToStep as React.Dispatch<React.SetStateAction<CameraStep>>}
               filters={photoFilters}
               setFilters={setPhotoFilters}
               selectedDesign={selectedDesign}
-              setSelectedDesign={setSelectedDesign}
+              setSelectedDesign={(design: DesignOverlay | null) => design && onSelectDesign(design)}
               images={images}
               designs={designs}
               onDownload={downloadType === "gif" ? handleDownloadGif : handleDownload}
               onBack={onBack}
-              NextButton={NextButton}
-              BackButton={BackButton}
             />
           ) : (
             <div>
               <DesignGrid
                 designs={designs}
-                selectedDesign={selectedDesign}
-                onSelectDesign={setSelectedDesign}
+                selectedDesign={selectedDesign ?? undefined}
+                onSelectDesign={onSelectDesign}
               />
               <div className="flex justify-between mt-4">
                 <BackButton onClick={() => goToStep("filters")}>Back</BackButton>

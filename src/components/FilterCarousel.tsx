@@ -1,5 +1,15 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useTheme } from "./ThemeContext";
+import { FilterOption } from "../types";
+
+interface FilterCarouselProps {
+  filters: FilterOption[];
+  activeFilter: number | null;
+  setActiveFilter: React.Dispatch<React.SetStateAction<number | null>>;
+  images: string[]; // Array de data URLs de imágenes
+  filtersState: string[]; // Array de filtros aplicados a cada imagen
+  setFilters: React.Dispatch<React.SetStateAction<string[]>>;
+}
 
 // Carousel for paginating filters, 5 at a time
 export function FilterCarousel({
@@ -9,10 +19,10 @@ export function FilterCarousel({
   images,
   filtersState,
   setFilters,
-}) {
-  const { colors } = useTheme();
+}: FilterCarouselProps): React.JSX.Element {
+  const { colors, isDarkMode } = useTheme();
   const pageSize = 5;
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState<number>(0);
   const pageCount = Math.ceil(filters.length / pageSize);
   const start = page * pageSize;
   const paginatedFilters = filters.slice(start, start + pageSize);
@@ -22,7 +32,7 @@ export function FilterCarousel({
       {page > 0 && (
         <button
           onClick={() => setPage((p) => Math.max(0, p - 1))}
-          className={`px-2 py-1 rounded ${colors.isDarkMode ? 'bg-gray-600 hover:bg-gray-500' : 'bg-gray-200 hover:bg-gray-300'} transition`}
+          className={`px-2 py-1 rounded ${isDarkMode ? 'bg-gray-600 hover:bg-gray-500' : 'bg-gray-200 hover:bg-gray-300'} transition`}
           aria-label="Previous Filters"
         >
           &lt;
@@ -91,7 +101,7 @@ export function FilterCarousel({
       {page < pageCount - 1 && (
         <button
           onClick={() => setPage((p) => Math.min(pageCount - 1, p + 1))}
-          className={`px-2 py-1 rounded ${colors.isDarkMode ? 'bg-gray-600 hover:bg-gray-500' : 'bg-gray-200 hover:bg-gray-300'} transition`}
+          className={`px-2 py-1 rounded ${isDarkMode ? 'bg-gray-600 hover:bg-gray-500' : 'bg-gray-200 hover:bg-gray-300'} transition`}
           aria-label="Next Filters"
         >
           &gt;
