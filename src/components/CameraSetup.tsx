@@ -77,39 +77,48 @@ export default function CameraSetup({ layout, onBack, onDone }: CameraSetupProps
       // Start recording at the beginning of countdown
       const video = document.querySelector("video") as HTMLVideoElement;
       if (video) {
-        const stream = (video as any).captureStream();
-        recorder = new MediaRecorder(stream, { mimeType: "video/webm" });
-        recorder.ondataavailable = (e: BlobEvent): void => {
-          if (e.data.size > 0) chunks.push(e.data);
-        };
-        recorder.onstop = async (): Promise<void> => {
-          // Create GIF from video
-          const videoBlob = new Blob(chunks, { type: "video/webm" });
-          const url = URL.createObjectURL(videoBlob);
-          
-          // Dynamically import gifshot
-          const gifshot = (await import('gifshot')).default;
-          
-          gifshot.createGIF({
-            video: [url],
-            gifWidth: 320,
-            gifHeight: 240,
-            numFrames: 10,
-            frameDuration: 0.2,
-          }, function(obj: any): void {
-            setCaptured((prev: CapturedImageWithGif[]) => {
-              // Update the last entry with the gif
-              const updated = [...prev];
-              if (updated.length > 0) {
-                updated[updated.length - 1] = { ...updated[updated.length - 1], gif: obj.image };
-              }
-              return updated;
+        // Check if captureStream is available (not available in iOS/Safari)
+        // Using type assertion to handle the experimental captureStream method
+        const videoElement = video as HTMLVideoElement & { captureStream?: () => MediaStream };
+        if (videoElement.captureStream) {
+          const stream = videoElement.captureStream();
+          recorder = new MediaRecorder(stream, { mimeType: "video/webm" });
+          recorder.ondataavailable = (e: BlobEvent): void => {
+            if (e.data.size > 0) chunks.push(e.data);
+          };
+          recorder.onstop = async (): Promise<void> => {
+            // Create GIF from video
+            const videoBlob = new Blob(chunks, { type: "video/webm" });
+            const url = URL.createObjectURL(videoBlob);
+            
+            // Dynamically import gifshot
+            const gifshot = (await import('gifshot')).default;
+            
+            gifshot.createGIF({
+              video: [url],
+              gifWidth: 320,
+              gifHeight: 240,
+              numFrames: 10,
+              frameDuration: 0.2,
+            }, function(obj: any): void {
+              setCaptured((prev: CapturedImageWithGif[]) => {
+                // Update the last entry with the gif
+                const updated = [...prev];
+                if (updated.length > 0) {
+                  updated[updated.length - 1] = { ...updated[updated.length - 1], gif: obj.image };
+                }
+                return updated;
+              });
+              URL.revokeObjectURL(url);
             });
-            URL.revokeObjectURL(url);
-          });
         };
-        recorder.start();
-        mediaRecorderRef.current = recorder;
+          recorder.start();
+          mediaRecorderRef.current = recorder;
+        } else {
+          // Fallback for iOS devices where captureStream is not supported
+          console.log('captureStream not supported on this device - skipping GIF creation');
+          // We'll still proceed with photo capture, just no GIF
+        }
       }
     }
     if (countdown === 0) {
