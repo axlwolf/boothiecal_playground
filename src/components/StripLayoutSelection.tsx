@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { useTheme } from "./ThemeContext";
 import { LayoutOption } from "../types";
 
@@ -6,22 +6,26 @@ interface StripLayoutSelectionProps {
   onSelectLayout: (layout: LayoutOption) => void;
 }
 
-export default function StripLayoutSelection({ onSelectLayout }: StripLayoutSelectionProps): React.JSX.Element {
+export default function StripLayoutSelection({
+  onSelectLayout,
+}: StripLayoutSelectionProps): React.JSX.Element {
   const { colors } = useTheme();
   const layouts: LayoutOption[] = [
-    { id: 1, label: "1 Shot", img: "/boothiecal_playground/images/strip-1.png", shots: 1 },
-    { id: 3, label: "3 Shot", img: "/boothiecal_playground/images/strip-3.png", shots: 3 },
-    { id: 4, label: "4 Shot", img: "/boothiecal_playground/images/strip-4.png", shots: 4 },
-    { id: 6, label: "6 Shot", img: "/boothiecal_playground/images/strip-6.png", shots: 6 },
+    { id: 1, label: "1 Shot", img: "/images/strip-1.png", shots: 1 },
+    { id: 3, label: "3 Shot", img: "/images/strip-3.png", shots: 3 },
+    { id: 4, label: "4 Shot", img: "/images/strip-4.png", shots: 4 },
+    { id: 6, label: "6 Shot", img: "/images/strip-6.png", shots: 6 },
   ];
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center w-full px-2">
-      <h2 className={`text-2xl sm:text-3xl font-bold mb-8 ${colors.text} text-center`}>
+      <h2
+        className={`text-2xl sm:text-3xl font-bold mb-8 ${colors.text} text-center`}
+      >
         Choose Your Strip Layout
       </h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 w-full max-w-4xl">
-        {layouts.map(layout => (
+        {layouts.map((layout) => (
           <button
             key={layout.id}
             onClick={() => onSelectLayout(layout)}
@@ -34,7 +38,11 @@ export default function StripLayoutSelection({ onSelectLayout }: StripLayoutSele
                 className="object-contain h-full"
               />
             </div>
-            <span className={`mt-auto text-base sm:text-lg font-semibold ${colors.text}`}>{layout.label}</span>
+            <span
+              className={`mt-auto text-base sm:text-lg font-semibold ${colors.text}`}
+            >
+              {layout.label}
+            </span>
           </button>
         ))}
       </div>
