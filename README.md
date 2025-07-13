@@ -5,7 +5,7 @@ A sophisticated web-based photobooth application featuring the elegant "Eleganci
 ## 🌟 Features
 
 ### 📸 **Photo & GIF Capture**
-- **Real-time camera integration** with high-quality photo capture
+|8|- **Real-time camera integration** with high-quality photo capture on both Android and iOS devices
 - **Animated GIF creation** - captures motion during photo sessions
 - **Multiple shot layouts**: 1, 3, 4, or 6 photos per strip
 - **Countdown timer** with visual feedback for perfect timing
@@ -268,6 +268,7 @@ This will build the project and deploy it to the configured GitHub Pages URL.
 
 ## 🎉 Recent Updates
 
+- ✅ **iOS Camera Compatibility** - Full support for photo capture on iOS devices
 - ✅ **Elegancia Nocturna design system** implementation
 - ✅ **Premium typography** with Cinzel and Montserrat fonts
 - ✅ **Luxury gold color palette** (#D8AE48) throughout the app
