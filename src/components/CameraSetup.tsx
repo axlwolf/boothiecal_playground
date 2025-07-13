@@ -78,8 +78,10 @@ export default function CameraSetup({ layout, onBack, onDone }: CameraSetupProps
       const video = document.querySelector("video") as HTMLVideoElement;
       if (video) {
         // Check if captureStream is available (not available in iOS/Safari)
-        if (video.captureStream || (video as any).captureStream) {
-          const stream = (video as any).captureStream();
+        // Using type assertion to handle the experimental captureStream method
+        const videoElement = video as HTMLVideoElement & { captureStream?: () => MediaStream };
+        if (videoElement.captureStream) {
+          const stream = videoElement.captureStream();
           recorder = new MediaRecorder(stream, { mimeType: "video/webm" });
           recorder.ondataavailable = (e: BlobEvent): void => {
             if (e.data.size > 0) chunks.push(e.data);
