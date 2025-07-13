@@ -23,7 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-.claude
-.gemini
+.claude/
+.gemini/
 CLAUDE.md
 GEMINI.md
